@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html th:replace="~{common/layout :: layout(~{::title}, ~{::header}, ~{::section})}" lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Report 3: Price Summary</title>
+</head>
+<body>
+<header>Report 3: Price Summary by Property Type</header>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="text-body-secondary mb-0">Aggregated price statistics grouped by property type.</p>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/apartment/reports/overview}">Overview Report</a>
+            <a class="btn btn-outline-secondary" th:href="@{/apartment/reports/bookings}">Bookings Report</a>
+            <a class="btn btn-primary" th:href="@{/apartment}">Back to List</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+            <tr>
+                <th>Property Type</th>
+                <th>Total Apartments</th>
+                <th>Min Price/Night</th>
+                <th>Max Price/Night</th>
+                <th>Avg Price/Night</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(summary)}">
+                <td colspan="5" class="text-center text-body-secondary">No data found.</td>
+            </tr>
+            <tr th:each="s : ${summary}">
+                <td><span class="badge bg-secondary" th:text="${s.propertytype}"></span></td>
+                <td th:text="${s.total_apartments}"></td>
+                <td th:text="${'₴' + #numbers.formatDecimal(s.min_price, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${'₴' + #numbers.formatDecimal(s.max_price, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${'₴' + #numbers.formatDecimal(s.avg_price, 1, 'COMMA', 2, 'POINT')}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

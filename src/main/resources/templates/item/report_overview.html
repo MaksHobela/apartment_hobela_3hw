@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html th:replace="~{common/layout :: layout(~{::title}, ~{::header}, ~{::section})}" lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Report 1: Apartments Overview</title>
+</head>
+<body>
+<header>Report 1: Apartments Overview</header>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <p class="text-body-secondary mb-0">All apartments with their location details.</p>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" th:href="@{/apartment/reports/bookings}">Bookings Report</a>
+            <a class="btn btn-outline-secondary" th:href="@{/apartment/reports/summary}">Price Summary</a>
+            <a class="btn btn-primary" th:href="@{/apartment}">Back to List</a>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle mb-0">
+            <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Apartment Name</th>
+                <th>Type</th>
+                <th>Price/Night</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Postal Code</th>
+                <th>Registered</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(apartments)}">
+                <td colspan="8" class="text-center text-body-secondary">No data found.</td>
+            </tr>
+            <tr th:each="apt : ${apartments}">
+                <td th:text="${apt.apartmentid}"></td>
+                <td class="fw-semibold" th:text="${apt.apartmentname}"></td>
+                <td><span class="badge bg-secondary" th:text="${apt.propertytype}"></span></td>
+                <td th:text="${'₴' + apt.pricepernight}"></td>
+                <td th:text="${apt.city}"></td>
+                <td th:text="${apt.country}"></td>
+                <td th:text="${apt.postalCode}"></td>
+                <td th:text="${apt.dateofReg}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

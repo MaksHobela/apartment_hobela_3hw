@@ -3,42 +3,54 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Items</title>
+    <title>Apartments</title>
 </head>
 <body>
-<header>Items</header>
+<header>Apartments</header>
 
 <section>
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <p class="text-body-secondary mb-0">Rename this entity to fit your domain.</p>
-        <a class="btn btn-primary" th:href="@{/item/create}">Create item</a>
+        <p class="text-body-secondary mb-0">Manage all apartments in the system.</p>
+        <div class="d-flex gap-2">
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Reports
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="@{/apartment/reports/overview}">Apartments Overview</a></li>
+                    <li><a class="dropdown-item" th:href="@{/apartment/reports/bookings}">Bookings Report</a></li>
+                    <li><a class="dropdown-item" th:href="@{/apartment/reports/summary}">Price Summary</a></li>
+                </ul>
+            </div>
+            <a class="btn btn-primary" th:href="@{/apartment/create}">+ Add Apartment</a>
+        </div>
     </div>
 
     <div class="row g-3 mb-4">
         <div class="col-md-4">
             <div class="card h-100 border-0 bg-body-tertiary">
                 <div class="card-body">
-                    <p class="text-body-secondary small text-uppercase fw-semibold mb-2">Average Price</p>
+                    <p class="text-body-secondary small text-uppercase fw-semibold mb-2">Average Price/Night</p>
                     <p class="fs-3 fw-semibold mb-0"
-                       th:text="${'$' + #numbers.formatDecimal(priceSummary.average, 1, 'COMMA', 2, 'POINT')}">$0.00</p>
+                       th:text="${'₴' + #numbers.formatDecimal(avgPrice, 1, 'COMMA', 2, 'POINT')}">₴0.00</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card h-100 border-0 bg-body-tertiary">
                 <div class="card-body">
-                    <p class="text-body-secondary small text-uppercase fw-semibold mb-2">Max Price</p>
+                    <p class="text-body-secondary small text-uppercase fw-semibold mb-2">Max Price/Night</p>
                     <p class="fs-3 fw-semibold mb-0"
-                       th:text="${'$' + #numbers.formatDecimal(priceSummary.max, 1, 'COMMA', 2, 'POINT')}">$0.00</p>
+                       th:text="${'₴' + #numbers.formatDecimal(maxPrice, 1, 'COMMA', 2, 'POINT')}">₴0.00</p>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card h-100 border-0 bg-body-tertiary">
                 <div class="card-body">
-                    <p class="text-body-secondary small text-uppercase fw-semibold mb-2">Min Price</p>
+                    <p class="text-body-secondary small text-uppercase fw-semibold mb-2">Min Price/Night</p>
                     <p class="fs-3 fw-semibold mb-0"
-                       th:text="${'$' + #numbers.formatDecimal(priceSummary.min, 1, 'COMMA', 2, 'POINT')}">$0.00</p>
+                       th:text="${'₴' + #numbers.formatDecimal(minPrice, 1, 'COMMA', 2, 'POINT')}">₴0.00</p>
                 </div>
             </div>
         </div>
@@ -48,26 +60,35 @@
         <table class="table table-striped align-middle mb-0">
             <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Price</th>
-                <th class="text-end" scope="col">Actions</th>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Price/Night</th>
+                <th>Postal Code</th>
+                <th>Host ID</th>
+                <th class="text-end">Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:if="${#lists.isEmpty(items)}">
-                <td class="text-center text-body-secondary" colspan="5">No items yet.</td>
+            <tr th:if="${#lists.isEmpty(apartments)}">
+                <td class="text-center text-body-secondary" colspan="8">No apartments yet.</td>
             </tr>
-            <tr th:each="item : ${items}">
-                <td th:text="${item.id}">1</td>
-                <td class="fw-semibold" th:text="${item.name}">Sample item</td>
-                <td th:text="${item.description}">Description</td>
-                <td th:text="${'$' + #numbers.formatDecimal(item.price, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+            <tr th:each="apt : ${apartments}">
+                <td th:text="${apt.apartmentid}"></td>
+                <td class="fw-semibold" th:text="${apt.apartmentname}"></td>
+                <td><span class="badge bg-secondary" th:text="${apt.propertytype}"></span></td>
+                <td th:text="${apt.description}"></td>
+                <td th:text="${'₴' + #numbers.formatDecimal(apt.pricepernight, 1, 'COMMA', 2, 'POINT')}"></td>
+                <td th:text="${apt.postalcode}"></td>
+                <td th:text="${apt.hostid}"></td>
                 <td>
                     <div class="d-flex justify-content-end gap-2">
-                        <a class="btn btn-sm btn-outline-secondary" th:href="@{/item/{id}/edit(id=${item.id})}">Edit</a>
-                        <form method="post" th:action="@{/item/{id}/delete(id=${item.id})}">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/apartment/{id}/edit(id=${apt.apartmentid})}">Edit</a>
+                        <form method="post"
+                              th:action="@{/apartment/{id}/delete(id=${apt.apartmentid})}"
+                              onsubmit="return confirm('Delete this apartment?')">
                             <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
                         </form>
                     </div>
